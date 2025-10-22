@@ -1,3 +1,19 @@
+# ColdFusion Docker CI/CD
+
+## 🚀 CI/CD Pipeline - Windows Compatible
+
+This project includes a **production-ready CI/CD pipeline** that works with GitHub Actions on both Windows and Linux runners.
+
+### ✅ Pipeline Fixed for Windows Runners
+
+The pipeline uses a **hybrid approach** to resolve Docker Buildx compatibility issues:
+- **Build/Test Jobs**: Run on Ubuntu (Docker Buildx compatible)
+- **Deployment Jobs**: Run on Windows (PowerShell deployment)
+
+📖 **See [QUICK-START.md](QUICK-START.md) for deployment instructions**
+
+---
+
 ## Compose sample application
 ### ColdFusion standalone application
 
@@ -140,4 +156,74 @@ Mysql
 Stop and remove the containers
 ```
 $ docker-compose down
+```
+
+---
+
+## 🔄 CI/CD Pipeline
+
+This project includes automated CI/CD pipelines for different environments.
+
+### **Pipeline Files**
+
+- **`.github/workflows/Pipeline-Approval.yml`** - Main CI/CD pipeline with approval workflow
+
+### **Environment Configurations**
+
+| Environment | Docker Compose | Env File | Branch |
+|------------|---------------|----------|---------|
+| **Staging** | `docker-compose.staging.yml` | `env.staging` | `develop` |
+| **Production** | `docker-compose.production.yml` | `env.production` | `main` |
+
+### **Quick Deploy**
+
+```bash
+# Automatic deployment
+git push origin develop    # Deploy to staging
+git push origin main       # Deploy to production
+
+# Manual deployment
+# Go to Actions tab → Run workflow → Select environment → Approve
+```
+
+### **Documentation**
+
+- 📖 [QUICK-START.md](QUICK-START.md) - Quick reference guide
+- 📚 [PIPELINE-GUIDE.md](PIPELINE-GUIDE.md) - Complete pipeline documentation
+- 📝 [CHANGELOG-PIPELINE.md](CHANGELOG-PIPELINE.md) - What changed and why
+
+### **Key Features**
+
+✅ Windows and Linux runner compatibility  
+✅ Automated testing and security scanning  
+✅ Environment-specific configurations  
+✅ Manual approval workflows  
+✅ Health checks and monitoring  
+✅ SSL/TLS support for production  
+
+---
+
+## 📦 Project Files
+
+```
+.
+├── .github/workflows/
+│   └── Pipeline-Approval.yml           # CI/CD pipeline
+├── app/                                 # ColdFusion application
+├── config/
+│   ├── staging-config/                  # Staging CF configuration
+│   └── production-config/               # Production CF configuration
+├── nginx/
+│   ├── staging.conf                     # Staging nginx config
+│   └── production.conf                  # Production nginx config (SSL)
+├── scripts/
+│   ├── deploy-staging.ps1               # Manual staging deployment
+│   └── deploy-production.ps1            # Manual production deployment
+├── docker-compose.yml                   # Local development
+├── docker-compose.staging.yml           # Staging environment
+├── docker-compose.production.yml        # Production environment
+├── env.staging                          # Staging variables
+├── env.production                       # Production variables
+├── dockerfile                           # Docker image definition
+└── init.sql                            # Database initialization
 ```
