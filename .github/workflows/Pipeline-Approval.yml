@@ -204,7 +204,6 @@ jobs:
       needs.build-and-push.result == 'success' &&
       (needs.wait-for-approval.result == 'success' || needs.wait-for-approval.result == 'skipped') &&
       (
-        (github.ref == 'refs/heads/develop' && github.event_name == 'push') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging' && github.event.inputs.approve_deployment == 'true')
       )
     environment: staging
@@ -267,9 +266,9 @@ jobs:
       needs.build-and-push.result == 'success' &&
       (needs.wait-for-approval.result == 'success' || needs.wait-for-approval.result == 'skipped') &&
       (
-        (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production' && github.event.inputs.approve_deployment == 'true')
       )
+        
     environment: production
     
     steps:
