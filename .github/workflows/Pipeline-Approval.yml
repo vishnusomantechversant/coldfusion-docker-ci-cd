@@ -1,4 +1,4 @@
-name: ColdFusion Docker CI/CD Pipeline
+name: ColdFusion Docker CI/CD Pipeline Approval
 
 on:
   push:
