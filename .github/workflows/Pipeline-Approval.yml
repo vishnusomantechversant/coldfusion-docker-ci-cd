@@ -21,6 +21,12 @@ on:
         default: false
         type: boolean
 
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+  actions: read
+
 env:
   DOCKER_REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -101,19 +107,37 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Run Trivy vulnerability scanner
+    - name: Run Trivy vulnerability scanner (Table Format)
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'table'
+        exit-code: '0'
+        
+    - name: Run Trivy vulnerability scanner (SARIF Format)
       uses: aquasecurity/trivy-action@master
       with:
         scan-type: 'fs'
         scan-ref: '.'
         format: 'sarif'
         output: 'trivy-results.sarif'
+        exit-code: '0'
         
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
       if: always()
+      continue-on-error: true
       with:
         sarif_file: 'trivy-results.sarif'
+        
+    - name: Upload Trivy results as artifact
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: trivy-security-results
+        path: trivy-results.sarif
+        retention-days: 30
 
   build-and-push:
     runs-on: ubuntu-latest
