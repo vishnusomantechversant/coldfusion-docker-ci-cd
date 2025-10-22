@@ -1,0 +1,107 @@
+version: "3.8"
+services:
+  coldfusion:
+    container_name: coldfusion-production
+    image: ghcr.io/${GITHUB_REPOSITORY}:latest
+    ports:
+      - "8555:8500"
+    environment:
+      - acceptEULA=YES
+      - password=${CF_PASSWORD}
+      - CF_ENV=production
+    volumes:
+      - ./app:/app
+      - ./production-config:/opt/coldfusion/cfusion/lib
+      - ./logs:/opt/coldfusion/cfusion/logs
+    networks:
+      - production_network
+    depends_on:
+      - mysql
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/test.cfm"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+
+  mysql:
+    container_name: mysql-production
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3333:3306"
+    volumes:
+      - ./mysql-data-production:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql-backups:/backups
+    networks:
+      - production_network
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+  nginx:
+    container_name: nginx-production
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/production.conf:/etc/nginx/nginx.conf
+      - ./ssl/production:/etc/nginx/ssl
+      - ./logs/nginx:/var/log/nginx
+    networks:
+      - production_network
+    depends_on:
+      - coldfusion
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    container_name: redis-production
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - production_network
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  production_network:
+    driver: bridge

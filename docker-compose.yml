@@ -1,0 +1,34 @@
+version: "3"
+services:
+  coldfusion:
+    container_name: mycoldfusion
+    build: .
+    ports:
+      - "8555:8500"
+    environment:
+        - acceptEULA=YES
+        - password=Pwd4cf!23
+    volumes:
+      - ./app:/app
+    networks:
+      - my_network
+    depends_on:
+        - mysql
+    restart: on-failure
+
+  mysql:
+    container_name: mymysql
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydatabase
+    ports:
+      - "3333:3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my_network
+networks:
+  my_network:

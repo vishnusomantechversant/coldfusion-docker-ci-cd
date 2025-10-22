@@ -1,0 +1,189 @@
+
+/* First Table */
+.first {
+    margin: auto;
+  }
+  
+  /* ********Second Table ***************** */
+  
+  table.second {
+    border: 4px solid black;
+  /* using a % makes the table fluid */
+    width: 90%;
+    max-width: 100%;
+    margin: auto;
+  /*   border-collapse: collapse; */
+    /*border-spacing: 0;*/ 
+  }
+  
+  .second th {
+      padding: .5em;
+  }
+  .second td { 
+  
+      border: 1px solid black;
+      padding: .5em;
+      text-align: center;
+    /*   text will not wrap -note that it will push table outside container without a media query to override it for smaller screen sizes  */
+      white-space: nowrap;
+  }
+  
+  .second tr:nth-child(even) {
+      background: skyblue;
+  }
+  
+  .second tfoot th, .second tfoot td, .second thead {
+      border: none;
+      background: grey;
+      font-weight: bold;
+  }
+  .second tfoot th {
+      text-align: left;
+  }
+  
+  .second caption {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      padding-bottom: .5em;
+      font-size: 1.1em;
+  
+  }
+  /* Third Table */
+  
+  table.third {
+      border: 2px solid black;
+      border-collapse: collapse;
+      width: 90%;
+      margin: auto;
+  
+  }
+  .third th {
+    padding: .5em;
+  }
+  .third tr, .third td {
+  
+      border: 1px solid black;
+      padding: .5em;
+  }
+  .third td, .third tr {
+      text-align: center;
+      vertical-align: bottom;
+  
+  }
+  .third tr:nth-child(even) {
+      background: skyblue;
+  }
+  
+  .third tfoot th, .third tfoot td, .third thead {
+      border: none;
+      background: grey;
+      font-weight: bold;
+  }
+  .third figure figcaption {
+    text-align: center;
+  }
+  
+  /* ************************* General Styles *************************************/
+  
+  body {
+    width: 60%;
+    margin: auto;
+    background: #808080;
+    font-family: sans-serif; 
+    font-size: 100%;
+  }
+  article {
+    margin-bottom: 3em;
+  }
+  
+  h4 {
+    margin: 0;
+  }
+  
+  header, footer {
+    text-align: center;
+    background: #BD0029;
+    color: white;
+    padding: 1.75em 0;
+  }
+  
+  section {
+      background: white;
+      padding: 1em;
+  }
+  
+  h3 {
+    text-align: center;
+  }
+  
+  ul li {
+    margin-bottom: .4em;
+  }
+  
+  
+  /* ******************Media Queries *************************/
+   @media only screen and (max-width: 1215px) {
+     table.second {
+  /*    table text will wrap so table does not push outside container */
+       white-space: normal;
+     }
+     body {
+       width: 85%;
+     }
+     
+  }
+  /* max-width condition 600px or less */
+   @media only screen and (max-width: 600px) {
+    
+     body {
+       width: 100%;
+     } 
+     
+  /*    So the table displays full width */
+     table.third {
+       width: 100%;
+     }
+  /*    Table data will display full width */
+      .third td {
+      display: block;
+  }
+  /*    The table head element and data rows/data inside will not display  */
+  
+      .third thead {
+          display: none;    
+      }
+  /*    so the data column goes full width */
+     .third th {
+       display: block;
+     }
+      
+      .third tr td:first-child {
+          font-weight: bold;
+          font-size: 1.1em;
+          background-color: aqua;
+      }
+  
+      .third td {
+          background: white;
+      }
+  
+      .third tbody td {
+          border-style: none;
+      }
+     
+  /*     .third tfoot {
+          display: none;
+      } */
+  /*     caption {
+          display: none;
+      } */
+     ul {
+       padding-left: .25em;
+     }
+  
+     .main {
+       padding-left: .5em;
+     }
+     .main ul li ul li {
+       margin-left: 2em;
+     } 
+   }
